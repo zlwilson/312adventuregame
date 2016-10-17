@@ -79,32 +79,34 @@ value(gats, 4).
 value(herbs, 12).
 
 
-/* These rules describe actions with object. */
+/* Rules for collecting objects */
 
-take(X) :-
+pickup(X) :-
 	holding(X),
 	write('You''re already holding that!'),
 	!, nl.
 
-take(X) :-
-	i_am_at(Place),
-	at(X, Place),
-	retract(at(X, Place)),
+pickup(X) :-
+	i_am_at(P),
+	at(X, P),
+	retract(at(X, P)),
 	assert(holding(X)),
 	write('OK.'),
 	value(X,I),
-	b_setval(level, level + I),
+	b_setval(L, L + I),
+	nb_current(L, L);
+	write('Level: ' + L),
 	!, nl.
 
-take(_) :-
+pickup(_) :-
 	write('I don''t see it here.'),
 	nl.
 
 drop(X) :-
 	holding(X),
-	i_am_at(Place),
+	i_am_at(P),
 	retract(holding(X)),
-	assert(at(X, Place)),
+	assert(at(X, P)),
 	write('OK, item dropped.'),
 	!, nl.
 
@@ -113,25 +115,24 @@ drop(_) :-
 	nl.
 
 look :-
-	i_am_at(Place),
-	describe(Place),
+	i_am_at(P),
+	describe(P),
 	nl,
-	notice_objects_at(Place),
+	notice_objects_at(P),
 	nl.
 
 
-/* These rules set up a loop to print out all the objects
-in your vicinity. */
+/* Print out objects around you */
 
-notice_objects_at(Place) :-
-	at(X, Place),
+notice_objects_at(P) :-
+	at(X, P),
 	write('There is a '), write(X), write(' here.'), nl,
 	fail.
 
 notice_objects_at(_).
 
 
-/* These rules define the direction letters as calls to go/1. */
+/* Directions and moving */
 
 n :- go(n).
 
@@ -141,11 +142,11 @@ e :- go(e).
 
 w :- go(w).
 
-go(Direction) :-
-	i_am_at(Here),
-	path(Here, Direction, There),
-	retract(i_am_at(Here)),
-	assert(i_am_at(There)),
+go(D) :-
+	i_am_at(H),
+	path(H, D, T),
+	retract(i_am_at(H)),
+	assert(i_am_at(T)),
 	!, look.
 
 go(_) :- write('You can''t go that way.').
@@ -159,6 +160,7 @@ look :-
 	nl.
 
 win :-
+	write('You win with '), write(Level), write('points!'),
     finish
 	i_am_at(2.0),
 	holding(brisk),
@@ -173,8 +175,6 @@ finish :-
 	nl.
 
 
-/* This rule just writes out game instructions. */
-
 instructions :-
 	nl,
 	write('Welcome to a mountain in Peru!'), nl,
@@ -183,7 +183,7 @@ instructions :-
 	write('This is the layout of the world'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
-	write('|___|_X_|___|'), nl,
+	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('You are starting your adventure at the x'), nl,
@@ -191,7 +191,7 @@ instructions :-
 	write('Available commands are:'), nl,
 	write('start.             -- to start the game.'), nl,
 	write('n.  s.  e.  w.     -- to go in that direction.'), nl,
-	write('take(Object).      -- to pick up an object.'), nl,
+	write('pickup(Object).      -- to pick up an object.'), nl,
 	write('drop(Object).      -- to put down an object.'), nl,
 	write('look.              -- to look around you again.'), nl,
 	write('instructions.      -- to see this message again.'), nl,

@@ -1,4 +1,4 @@
-:- dynamic i_am_at/1, at/2, holding/1.
+:- dynamic i_am_at/1, at/2, inventory/1.
 :- retractall(at(_, _)), retractall(i_am_at(_)), retractall(alive(_)).
 
 i_am_at(start).
@@ -82,7 +82,7 @@ value(herbs, 12).
 /* Rules for collecting objects */
 
 pickup(X) :-
-	holding(X),
+	inventory(X),
 	write('You''re already holding that!'),
 	!, nl.
 
@@ -90,7 +90,7 @@ pickup(X) :-
 	i_am_at(P),
 	at(X, P),
 	retract(at(X, P)),
-	assert(holding(X)),
+	assert(inventory(X)),
 	write('OK.'),
 	value(X,I),
 	b_setval(L, L + I),
@@ -103,9 +103,9 @@ pickup(_) :-
 	nl.
 
 drop(X) :-
-	holding(X),
+	inventory(X),
 	i_am_at(P),
-	retract(holding(X)),
+	retract(inventory(X)),
 	assert(at(X, P)),
 	write('OK, item dropped.'),
 	!, nl.

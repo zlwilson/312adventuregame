@@ -69,49 +69,49 @@ at(herbs, 3.2).
 /* These rules describe actions with object. */
 
 take(X) :-
-        holding(X),
-        write('You''re already holding it!'),
-        !, nl.
+	holding(X),
+	write('You''re already holding that!'),
+	!, nl.
 
 take(X) :-
-        i_am_at(Place),
-        at(X, Place),
-        retract(at(X, Place)),
-        assert(holding(X)),
-        write('OK.'),
-        !, nl.
+	i_am_at(Place),
+	at(X, Place),
+	retract(at(X, Place)),
+	assert(holding(X)),
+	write('OK.'),
+	!, nl.
 
 take(_) :-
-        write('I don''t see it here.'),
-        nl.
+	write('I don''t see it here.'),
+	nl.
 
 drop(X) :-
-        holding(X),
-        i_am_at(Place),
-        retract(holding(X)),
-        assert(at(X, Place)),
-        write('OK, item dropped.'),
-        !, nl.
+	holding(X),
+	i_am_at(Place),
+	retract(holding(X)),
+	assert(at(X, Place)),
+	write('OK, item dropped.'),
+	!, nl.
 
 drop(_) :-
-        write('You aren''t holding that!'),
-        nl.
+	write('You aren''t holding that!'),
+	nl.
 
 look :-
-        i_am_at(Place),
-        describe(Place),
-        nl,
-        notice_objects_at(Place),
-        nl.
+	i_am_at(Place),
+	describe(Place),
+	nl,
+	notice_objects_at(Place),
+	nl.
 
 
-/* These rules set up a loop to mention all the objects
+/* These rules set up a loop to print out all the objects
 in your vicinity. */
 
 notice_objects_at(Place) :-
-        at(X, Place),
-        write('There is a '), write(X), write(' here.'), nl,
-        fail.
+	at(X, Place),
+	write('There is a '), write(X), write(' here.'), nl,
+	fail.
 
 notice_objects_at(_).
 
@@ -127,66 +127,154 @@ e :- go(e).
 w :- go(w).
 
 go(Direction) :-
-        i_am_at(Here),
-        path(Here, Direction, There),
-        retract(i_am_at(Here)),
-        assert(i_am_at(There)),
-        !, look.
+	i_am_at(Here),
+	path(Here, Direction, There),
+	retract(i_am_at(Here)),
+	assert(i_am_at(There)),
+	!, look.
 
-go(_) :-
-        write('You can''t go that way.').
+go(_) :- write('You can''t go that way.').
 
 
 /* This rule tells how to look about you. */
 
 look :-
-        i_am_at(Place),
-        describe(Place),
-        nl.
+	i_am_at(Place),
+	describe(Place),
+	nl.
 
-die :-
-        finish.
+win :-
+    finish
+	i_am_at(2.0),
+	holding(brisk),
+	holding(quesadilla),
+	holding(meat_sweats).
+
+die :- finish.
 
 finish :-
-        nl,
-        write('The game is over. Please enter the "halt." command.'),
-        nl.
+	nl,
+	write('The game is over. Please enter the "halt." command.'),
+	nl.
 
 
 /* This rule just writes out game instructions. */
 
 instructions :-
-        nl,
-        write('Welcome to a mountain in Peru!'), nl,
-        write('Your name is David the Explorer,'), nl,
-        write('And your quest is to find the Pool(e).'), nl,
-        write('This is the layout of the world'), nl,
-        write(' ___ ___ ___'), nl,
-        write('|___|___|___|'), nl,
-        write('|___|_X_|___|'), nl,
-        write('|___|___|___|'), nl,
-        write('|___|___|___|'), nl,
-        write('You are starting your adventure at the x'), nl,
-        write('Enter commands using standard Prolog syntax.'), nl,
-        write('Available commands are:'), nl,
-        write('start.             -- to start the game.'), nl,
-        write('n.  s.  e.  w.     -- to go in that direction.'), nl,
-        write('take(Object).      -- to pick up an object.'), nl,
-        write('drop(Object).      -- to put down an object.'), nl,
-        write('look.              -- to look around you again.'), nl,
-        write('instructions.      -- to see this message again.'), nl,
-        write('halt.              -- to end the game and quit.'), nl,
-        nl.
+	nl,
+	write('Welcome to a mountain in Peru!'), nl,
+	write('Your name is David the Explorer,'), nl,
+	write('And your quest is to find the Pool(e).'), nl,
+	write('This is the layout of the world'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|_X_|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('You are starting your adventure at the x'), nl,
+	write('Enter commands using standard Prolog syntax.'), nl,
+	write('Available commands are:'), nl,
+	write('start.             -- to start the game.'), nl,
+	write('n.  s.  e.  w.     -- to go in that direction.'), nl,
+	write('take(Object).      -- to pick up an object.'), nl,
+	write('drop(Object).      -- to put down an object.'), nl,
+	write('look.              -- to look around you again.'), nl,
+	write('instructions.      -- to see this message again.'), nl,
+	write('halt.              -- to end the game and quit.'), nl,
+	nl.
 
 
 /* This rule prints out instructions and tells where you are. */
 
 start :-
-        instructions,
-        look.
+	instructions,
+	look.
 
 
 /* Describe each room. */
 
-describe(someplace) :- write('You are someplace.'), nl.
+describe(0.0) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|_X_|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl.
+describe(0.1) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|_X_|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl.
+describe(0.2) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|_X_|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl.
+describe(1.0) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|_X_|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl.
+describe(start) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|_X_|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl.
+describe(1.2) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|_X_|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl.
+describe(end) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|_X_|___|___|'), nl,
+	write('|___|___|___|'), nl.
+describe(2.1) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|_X_|___|'), nl,
+	write('|___|___|___|'), nl.
+describe(2.2) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|_X_|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl.
+describe(3.0) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|_X_|___|___|'), nl.
+describe(3.1) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|_X_|___|'), nl.
+describe(3.2) :-
+	write('You are here:'), nl,
+	write(' ___ ___ ___'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|___|'), nl,
+	write('|___|___|_X_|'), nl.
 

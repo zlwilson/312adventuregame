@@ -253,8 +253,8 @@ describe(2.2) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
-	write('|_X_|___|___|'), nl,
 	write('|___|___|___|'), nl,
+	write('|___|___|_X_|'), nl,
 	write('|___|___|___|'), nl.
 describe(3.0) :-
 	write('You are here:'), nl,

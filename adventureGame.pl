@@ -92,10 +92,6 @@ pickup(X) :-
 	retract(at(X, P)),
 	assert(inventory(X)),
 	write('OK.'),
-	value(X,I),
-	b_setval(L, L + I),
-	nb_current(L, L);
-	write('Level: ' + L),
 	!, nl.
 
 pickup(_) :-
@@ -154,7 +150,7 @@ go(_) :- write('You can''t go that way.').
 
 /* This rule tells how to look about you. */
 
-look :-
+lookaround :-
 	i_am_at(Place),
 	describe(Place),
 	nl.

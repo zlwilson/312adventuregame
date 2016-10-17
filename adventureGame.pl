@@ -65,6 +65,19 @@ at(straps, 3.0).
 at(gats, 3.1).
 at(herbs, 3.2).
 
+value(brisk, 1).
+value(quesadilla, 1).
+value(sword_a_thousand_truths, 10).
+value(meat_sweats, -8).
+value(charlie_horse, -2).
+value(aight, 2).
+value(trophy, 50).
+value(forbidden_hoot, -10).
+value(tha_shiznit, 7).
+value(straps, 3).
+value(gats, 4).
+value(herbs, 12).
+
 
 /* These rules describe actions with object. */
 
@@ -79,6 +92,8 @@ take(X) :-
 	retract(at(X, Place)),
 	assert(holding(X)),
 	write('OK.'),
+	value(X,I),
+	b_setval(level, level + I),
 	!, nl.
 
 take(_) :-

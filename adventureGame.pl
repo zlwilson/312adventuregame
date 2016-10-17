@@ -1,4 +1,4 @@
-:- dynamic i_am_at/1, at/2, holding/1, equipped/1.
+:- dynamic i_am_at/1, at/2, holding/1, equipped/1, level/1.
 :- retractall(at(_, _)), retractall(i_am_at(_)), retractall(alive(_)).
 
 i_am_at(start).
@@ -130,8 +130,10 @@ take(X) :-
 	at(X, P),
 	retract(at(X, P)),
 	assert(holding(X)),
+	value(X,L),
+	assert(level(L)),
 	write('OK.'),
-	newlevel(X),
+	write(L),
 	!, nl.
 
 newlevel(X) :-
@@ -248,7 +250,7 @@ win :-
 	holding(quesadilla),
 	holding(meat_sweats).
 
-die :- 
+die :-
 	pickup(forbidden_hoot),
 	write('Sorry, you died! with'), nl,
 	finish.

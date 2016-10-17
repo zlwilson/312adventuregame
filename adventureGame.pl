@@ -1,53 +1,79 @@
-:- dynamic i_am_at/1, at/2, inventory/1.
+:- dynamic i_am_at/1, at/2, holding/1, equipped/1.
 :- retractall(at(_, _)), retractall(i_am_at(_)), retractall(alive(_)).
 
 i_am_at(start).
+
+equippedList([]).
 
 path(start, n, 0.1).
 path(start, s, 2.1).
 path(start, e, 1.2).
 path(start, w, 1.0).
+path(start, ne, 0.2).
+path(start, nw, 0.0).
+path(start, se, 2.2).
+path(start, sw, end).
 
 path(end, n, 1.0).
 path(end, e, 2.1).
 path(end, s, 3.0).
+path(end, ne, start).
+path(end, se, 3.1).
 
 path(0.0, e, 0.1).
 path(0.0, s, 1.0).
+path(0.0, se, start).
 
 path(0.1, w, 0.0).
 path(0.1, e, 0.2).
 path(0.1, s, start).
+path(0.1, se, 1.2).
+path(0.1, sw, 1.0).
 
 path(0.2, w, 0.1).
 path(0.2, s, 1.2).
+path(0.2, sw, start).
 
 path(1.0, n, 0.0).
 path(1.0, s, end).
 path(1.0, e, start).
+path(1.0, ne, 0.1).
+path(1.0, se, 2.1).
 
 path(1.2, n, 0.2).
 path(1.2, s, 2.2).
 path(1.2, w, start).
+path(1.2, nw, 0.1).
+path(1.2, sw, 2.1).
 
 path(2.1, n, start).
 path(2.1, s, 3.1).
 path(2.1, e, 2.2).
 path(2.1, w, end).
+path(2.1, nw, 1.0).
+path(2.1, sw, 3.0).
+path(2.1, ne, 1.2).
+path(2.1, se, 3.2).
 
 path(2.2, n, 1.2).
 path(2.2, s, 3.2).
 path(2.2, w, 2.1).
+path(2.2, nw, start).
+path(2.2, sw, 3.1).
 
 path(3.0, n, end).
 path(3.0, e, 3.1).
+path(3.0, ne, 2.1).
 
 path(3.1, n, 2.1).
 path(3.1, w, 3.2).
 path(3.1, e, 3.1).
+path(3.1, nw, end).
+path(3.2, ne, 2.2).
 
 path(3.2, n, 2.2).
 path(3.2, w, 3.1).
+path(3.0, nw, 2.1).
 
 
 /* list all objects and their locations */
@@ -78,30 +104,52 @@ value(straps, 3).
 value(gats, 4).
 value(herbs, 12).
 
+/* Movement styles: 0 = regular, 1 = diagonal, 2 = rook, */
+
+move(brisk, 2).
+move(quesadilla, 0).
+move(sword_a_thousand_truths, 1).
+move(meat_sweats, 2).
+move(charlie_horse, 0).
+move(aight, 0).
+move(tha_shiznit, 2).
+move(straps, 0).
+move(gats, 1).
+move(herbs, 1).
+
 
 /* Rules for collecting objects */
 
-pickup(X) :-
-	inventory(X),
+take(X) :-
+	holding(X),
 	write('You''re already holding that!'),
 	!, nl.
 
-pickup(X) :-
+take(X) :-
 	i_am_at(P),
 	at(X, P),
 	retract(at(X, P)),
-	assert(inventory(X)),
+	assert(holding(X)),
 	write('OK.'),
+	newlevel(X),
 	!, nl.
 
-pickup(_) :-
+newlevel(X) :-
+	nb_getval(level, L),
+	write('Old level is: '), write(L), nl,
+	value(X, I),
+	LNew is L + I,
+	nb_setval(level, LNew),
+	write('New level is: '), write(LNew), nl.
+
+take(_) :-
 	write('I don''t see it here.'),
 	nl.
 
 drop(X) :-
-	inventory(X),
+	holding(X),
 	i_am_at(P),
-	retract(inventory(X)),
+	retract(holding(X)),
 	assert(at(X, P)),
 	write('OK, item dropped.'),
 	!, nl.
@@ -109,6 +157,10 @@ drop(X) :-
 drop(_) :-
 	write('You aren''t holding that!'),
 	nl.
+
+equip(X) :-
+	holding(X),
+	add(equippedList, X, equippedList).
 
 look :-
 	i_am_at(P),
@@ -130,13 +182,46 @@ notice_objects_at(_).
 
 /* Directions and moving */
 
-n :- go(n).
+n :-
+	equip(X),
+	move(X,0),
+	go(n).
 
-s :- go(s).
+s :-
+	equip(X),
+	move(X,0),
+	go(s).
 
-e :- go(e).
+e :-
+	equip(X),
+	move(X,0),
+	go(e).
 
-w :- go(w).
+w :-
+	equip(X),
+	move(X,0),
+	go(w).
+
+ne :-
+	equip(X),
+	move(X,1),
+	go(ne).
+
+nw :-
+	equip(X),
+	move(X,1),
+	go(nw).
+
+se :-
+	equip(X),
+	move(X,1),
+	go(se).
+
+sw :-
+	equip(X),
+	move(X,1),
+	go(sw).
+
 
 go(D) :-
 	i_am_at(H),
@@ -156,14 +241,17 @@ lookaround :-
 	nl.
 
 win :-
-	write('You win with '), write(Level), write('points!'),
-    finish
+	write('You win with '), write(Level), write('points!'), nl,
+    finish,
 	i_am_at(2.0),
 	holding(brisk),
 	holding(quesadilla),
 	holding(meat_sweats).
 
-die :- finish.
+die :- 
+	pickup(forbidden_hoot),
+	write('Sorry, you died! with'), nl,
+	finish.
 
 finish :-
 	nl,
@@ -176,18 +264,19 @@ instructions :-
 	write('Welcome to a mountain in Peru!'), nl,
 	write('Your name is David the Explorer,'), nl,
 	write('And your quest is to find the Pool(e).'), nl,
-	write('This is the layout of the world'), nl,
+	write('This is the layout of the world: '), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
-	write('You are starting your adventure at the x'), nl,
 	write('Enter commands using standard Prolog syntax.'), nl,
 	write('Available commands are:'), nl,
 	write('start.             -- to start the game.'), nl,
-	write('n.  s.  e.  w.     -- to go in that direction.'), nl,
-	write('pickup(Object).      -- to pick up an object.'), nl,
+	write('You can equip objects as you go to change the directions you can move:'), nl,
+	write('n.  s.  e.  w.     -- to go in that direction when you are equipped with certain items.'), nl,
+	write('ne.  nw.  se.  sw. -- to go in that direction when you are equipped with certain items.'), nl,
+	write('take(Object).      -- to pick up an object.'), nl,
 	write('drop(Object).      -- to put down an object.'), nl,
 	write('look.              -- to look around you again.'), nl,
 	write('instructions.      -- to see this message again.'), nl,

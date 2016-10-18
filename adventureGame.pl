@@ -106,13 +106,13 @@ value(herbs, 12).
 
 /* Movement styles: 0 = regular, 1 = diagonal, 2 = rook, */
 
-move(brisk, 2).
+move(brisk, 1).
 move(quesadilla, 0).
 move(sword_a_thousand_truths, 1).
-move(meat_sweats, 2).
+move(meat_sweats, 1).
 move(charlie_horse, 0).
 move(aight, 0).
-move(tha_shiznit, 2).
+move(tha_shiznit, 1).
 move(straps, 0).
 move(gats, 1).
 move(herbs, 1).
@@ -162,7 +162,17 @@ drop(_) :-
 
 equip(X) :-
 	holding(X),
-	add(equippedList, X, equippedList).
+	add(equippedList, X, equippedList),
+	write('You are now equipped with '), write(X), ln,
+	movedirections(X).
+
+directions(X) :-
+	move(X, 0),
+	write('You can move n, e, s, w').
+
+directions(X) :-
+	move(X, 1),
+	write('You can move ne, nw, se, sw').
 
 look :-
 	i_am_at(P),

@@ -3,7 +3,7 @@
 
 i_am_at(start).
 
-equippedList([]).
+equippedList(dl([],[])).
 
 path(start, n, 0.1).
 path(start, s, 2.1).
@@ -133,6 +133,7 @@ take(X) :-
 	value(X,L),
 	assert(level(L)),
 	write('OK.'),
+	write("your level is changed by"),
 	write(L),
 	!, nl.
 
@@ -152,8 +153,12 @@ drop(X) :-
 	holding(X),
 	i_am_at(P),
 	retract(holding(X)),
+	value(X,L),
+	retract(level(L)),
 	assert(at(X, P)),
 	write('OK, item dropped.'),
+	write("your level is changed by"),
+	write(L),
 	!, nl.
 
 drop(_) :-
@@ -162,7 +167,7 @@ drop(_) :-
 
 equip(X) :-
 	holding(X),
-	add(equippedList, X, equippedList),
+	addtoequip(X, dl(PREV,NEW),dl(PREV,NEW)),
 	write('You are now equipped with '), write(X), ln,
 	movedirections(X).
 
@@ -191,6 +196,7 @@ notice_objects_at(P) :-
 
 notice_objects_at(_).
 
+addtoequip(E,dl(L1,L2),dl([E|L1])).
 
 /* Directions and moving */
 

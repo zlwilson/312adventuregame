@@ -1,95 +1,104 @@
-:- dynamic i_am_at/1, at/2, holding/1, equipped/1, level/1.
+	/* Layout of board:
+	   ___ ___ ___
+	  |_0_|_1_|_2_|
+	  |_3_|_4_|_5_|	start = 4
+	  |END|_6_|_7_|
+	  |_8_|_9_|_10|
+	*/
+
+:- dynamic i_am_at/1, at/2, holding/1, equipped/1, level/1, random/1.
 :- retractall(at(_, _)), retractall(i_am_at(_)), retractall(alive(_)).
 
-i_am_at(start).
+i_am_at(4).
 
 equippedList(dl([],[])).
 
-path(start, n, 0.1).
-path(start, s, 2.1).
-path(start, e, 1.2).
-path(start, w, 1.0).
-path(start, ne, 0.2).
-path(start, nw, 0.0).
-path(start, se, 2.2).
-path(start, sw, end).
+path(4, n, 1).
+path(4, s, 6).
+path(4, e, 5).
+path(4, w, 3).
+path(4, ne, 2).
+path(4, nw, 0).
+path(4, se, 7).
+path(4, sw, end).
 
-path(end, n, 1.0).
-path(end, e, 2.1).
-path(end, s, 3.0).
-path(end, ne, start).
-path(end, se, 3.1).
+path(end, n, 3).
+path(end, e, 6).
+path(end, s, 8).
+path(end, ne, 4).
+path(end, se, 9).
 
-path(0.0, e, 0.1).
-path(0.0, s, 1.0).
-path(0.0, se, start).
+path(0, e, 1).
+path(0, s, 3).
+path(0, se, 4).
 
-path(0.1, w, 0.0).
-path(0.1, e, 0.2).
-path(0.1, s, start).
-path(0.1, se, 1.2).
-path(0.1, sw, 1.0).
+path(1, w, 0).
+path(1, e, 2).
+path(1, s, 4).
+path(1, se, 5).
+path(1, sw, 3).
 
-path(0.2, w, 0.1).
-path(0.2, s, 1.2).
-path(0.2, sw, start).
+path(2, w, 1).
+path(2, s, 5).
+path(2, sw, 4).
 
-path(1.0, n, 0.0).
-path(1.0, s, end).
-path(1.0, e, start).
-path(1.0, ne, 0.1).
-path(1.0, se, 2.1).
+path(3, n, 0).
+path(3, s, end).
+path(3, e, 4).
+path(3, ne, 1).
+path(3, se, 6).
 
-path(1.2, n, 0.2).
-path(1.2, s, 2.2).
-path(1.2, w, start).
-path(1.2, nw, 0.1).
-path(1.2, sw, 2.1).
+path(5, n, 2).
+path(5, s, 7).
+path(5, w, 4).
+path(5, nw, 1).
+path(5, sw, 6).
 
-path(2.1, n, start).
-path(2.1, s, 3.1).
-path(2.1, e, 2.2).
-path(2.1, w, end).
-path(2.1, nw, 1.0).
-path(2.1, sw, 3.0).
-path(2.1, ne, 1.2).
-path(2.1, se, 3.2).
+path(6, n, 4).
+path(6, s, 9).
+path(6, e, 7).
+path(6, w, end).
+path(6, nw, 3).
+path(6, sw, 8).
+path(6, ne, 5).
+path(6, se, 10).
 
-path(2.2, n, 1.2).
-path(2.2, s, 3.2).
-path(2.2, w, 2.1).
-path(2.2, nw, start).
-path(2.2, sw, 3.1).
+path(7, n, 5).
+path(7, s, 10).
+path(7, w, 6).
+path(7, nw, 4).
+path(7, sw, 9).
 
-path(3.0, n, end).
-path(3.0, e, 3.1).
-path(3.0, ne, 2.1).
+path(8, n, end).
+path(8, e, 9).
+path(8, ne, 6).
 
-path(3.1, n, 2.1).
-path(3.1, w, 3.2).
-path(3.1, e, 3.1).
-path(3.1, nw, end).
-path(3.2, ne, 2.2).
+path(9, n, 6).
+path(9, w, 10).
+path(9, e, 9).
+path(9, nw, end).
+path(10, ne, 7).
 
-path(3.2, n, 2.2).
-path(3.2, w, 3.1).
-path(3.0, nw, 2.1).
+path(10, n, 7).
+path(10, w, 9).
+path(8, nw, 6).
 
 
 /* list all objects and their locations */
 
-at(brisk, 0.0).
-at(quesadilla, 0.1).
-at(sword_a_thousand_truths, 0.2).
-at(meat_sweats, 1.0).
-at(charlie_horse, start).
-at(aight, 1.2).
-at(trophy, end).
-at(dont_touch_me, 2.1).
-at(tha_shiznit, 2.2).
-at(straps, 3.0).
-at(gats, 3.1).
-at(herbs, 3.2).
+at(brisk, 0).
+at(quesadilla, 1).
+at(sword_a_thousand_truths, 2).
+at(meat_sweats, 3).
+at(charlie_horse, 4).
+at(aight, 2).
+at(pool, end).
+at(dont_touch_me, 6).
+at(tha_shiznit, 7).
+at(straps, 8).
+at(gats, 9).
+at(herbs, 10).
+at(david, 0).
 
 value(brisk, 1).
 value(quesadilla, 1).
@@ -103,6 +112,7 @@ value(tha_shiznit, 7).
 value(straps, 3).
 value(gats, 4).
 value(herbs, 12).
+value(david, 9001).
 
 /* Movement styles: 0 = regular, 1 = diagonal */
 
@@ -159,6 +169,7 @@ drop(X) :-
 	retract(holding(X)),
 	value(X,L),
 	retract(level(L)),
+	retract(equipped(X)),
 	assert(at(X, P)),
 	write('OK, item dropped.'), nl,
 	write("Your level is changed by: "),
@@ -171,17 +182,22 @@ drop(_) :-
 
 equip(X) :-
 	holding(X),
-	addtoequip(X, dl(PREV,NEW),dl(PREV,NEW)),
-	write('You are now equipped with '), write(X), ln,
+	assert(equipped(X)),
+	write('You are now equipped with '), write(X), nl,
 	directions(X).
+
+unequip(X) :-
+	retract(equipped(X)),
+	write('You are now unequipped with '), write(X), nl,
+	!, nl.
 
 directions(X) :-
 	move(X, 0),
-	write('You can move n, e, s, w').
+	write('You can move n, e, s, w'), nl.
 
 directions(X) :-
 	move(X, 1),
-	write('You can move ne, nw, se, sw').
+	write('You can move ne, nw, se, sw'), nl.
 
 look :-
 	i_am_at(P),
@@ -190,6 +206,16 @@ look :-
 	notice_objects_at(P),
 	nl.
 
+david :-
+	moveDavid(X),
+	at(david, X),
+	write('David is at '), write(X), nl.
+
+moveDavid(X) :- 
+	at(david, Y),
+	retract(at(david, Y)),
+	X is random(10),
+	assert(at(david, X)).
 
 /* Print out objects around you */
 
@@ -205,42 +231,42 @@ addtoequip(E,dl(L1,L2),dl([E|L1])).
 /* Directions and moving */
 
 n :-
-	equip(X),
+	equipped(X),
 	move(X,0),
 	go(n).
 
 s :-
-	equip(X),
+	equipped(X),
 	move(X,0),
 	go(s).
 
 e :-
-	equip(X),
+	equipped(X),
 	move(X,0),
 	go(e).
 
 w :-
-	equip(X),
+	equipped(X),
 	move(X,0),
 	go(w).
 
 ne :-
-	equip(X),
+	equipped(X),
 	move(X,1),
 	go(ne).
 
 nw :-
-	equip(X),
+	equipped(X),
 	move(X,1),
 	go(nw).
 
 se :-
-	equip(X),
+	equipped(X),
 	move(X,1),
 	go(se).
 
 sw :-
-	equip(X),
+	equipped(X),
 	move(X,1),
 	go(sw).
 
@@ -254,20 +280,11 @@ go(D) :-
 
 go(_) :- write('You can''t go that way.').
 
-
-/* This rule tells how to look about you. */
-
-lookaround :-
-	i_am_at(Place),
-	describe(Place),
-	nl.
-
 win :-
-	level(X),
-	X < -14,
-	write('You win with '), write(Level), write(' points!'), nl,
-    finish,
-	i_am_at(2.0).
+	holding(david),
+	i_am_at(end),
+	write('You got David to the Pool(e)!'), nl,
+    finish.
 
 finish :-
 	nl,
@@ -278,8 +295,8 @@ finish :-
 instructions :-
 	nl,
 	write('Welcome to a mountain in Peru!'), nl,
-	write('Your name is David the Explorer,'), nl,
-	write('And your quest is to find the Pool(e).'), nl,
+	write('Your name is Kevin the Explorer,'), nl,
+	write('And your quest is to find the David and get it to the Pool(e).'), nl,
 	write('This is the layout of the world: '), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
@@ -289,11 +306,15 @@ instructions :-
 	write('Enter commands using standard Prolog syntax.'), nl,
 	write('Available commands are:'), nl,
 	write('start.             -- to start the game.'), nl,
-	write('You can equip objects as you go to change the directions you can move:'), nl,
+	write('You can equip objects as you go that allow you to move, and to change the directions allowed:'), nl,
 	write('n.  s.  e.  w.     -- to go in that direction when you are equipped with certain items.'), nl,
 	write('ne.  nw.  se.  sw. -- to go in that direction when you are equipped with certain items.'), nl,
 	write('take(Object).      -- to pick up an object.'), nl,
 	write('drop(Object).      -- to put down an object.'), nl,
+	write('equip(Object).     -- to equip an item.'), nl,
+	write('unequip(Object).   -- to unequip an item.'), nl,
+	write('david.			  -- where is david now...'), nl,
+	write('look.              -- to look around you again.'), nl,
 	write('look.              -- to look around you again.'), nl,
 	write('instructions.      -- to see this message again.'), nl,
 	write('halt.              -- to end the game and quit.'), nl,
@@ -309,42 +330,42 @@ start :-
 
 /* Describe each room. */
 
-describe(0.0) :-
+describe(0) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|_X_|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl.
-describe(0.1) :-
+describe(1) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|_X_|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl.
-describe(0.2) :-
+describe(2) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|_X_|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl.
-describe(1.0) :-
+describe(3) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
 	write('|_X_|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl.
-describe(start) :-
+describe(4) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|_X_|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl.
-describe(1.2) :-
+describe(2) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
@@ -357,36 +378,37 @@ describe(end) :-
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|_X_|___|___|'), nl,
-	write('|___|___|___|'), nl.
-describe(2.1) :-
+	write('|___|___|___|'), nl,
+	write('Wow this room is really wet...'), nl.
+describe(6) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|_X_|___|'), nl,
 	write('|___|___|___|'), nl.
-describe(2.2) :-
+describe(7) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|_X_|'), nl,
 	write('|___|___|___|'), nl.
-describe(3.0) :-
+describe(8) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|_X_|___|___|'), nl.
-describe(3.1) :-
+describe(9) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|___|___|'), nl,
 	write('|___|_X_|___|'), nl.
-describe(3.2) :-
+describe(10) :-
 	write('You are here:'), nl,
 	write(' ___ ___ ___'), nl,
 	write('|___|___|___|'), nl,

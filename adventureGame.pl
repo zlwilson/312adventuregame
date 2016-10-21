@@ -85,7 +85,7 @@ at(meat_sweats, 1.0).
 at(charlie_horse, start).
 at(aight, 1.2).
 at(trophy, end).
-at(forbidden_hoot, 2.1).
+at(dont_touch_me, 2.1).
 at(tha_shiznit, 2.2).
 at(straps, 3.0).
 at(gats, 3.1).
@@ -98,13 +98,13 @@ value(meat_sweats, -8).
 value(charlie_horse, -2).
 value(aight, 2).
 value(trophy, 50).
-value(forbidden_hoot, -10).
+value(dont_touch_me, -15).
 value(tha_shiznit, 7).
 value(straps, 3).
 value(gats, 4).
 value(herbs, 12).
 
-/* Movement styles: 0 = regular, 1 = diagonal, 2 = rook, */
+/* Movement styles: 0 = regular, 1 = diagonal */
 
 move(brisk, 1).
 move(quesadilla, 0).
@@ -115,7 +115,7 @@ move(aight, 0).
 move(tha_shiznit, 1).
 move(straps, 0).
 move(gats, 1).
-move(herbs, 1).
+move(herbs, 0).
 
 
 /* Rules for collecting objects */
@@ -124,6 +124,10 @@ take(X) :-
 	holding(X),
 	write('You''re already holding that!'),
 	!, nl.
+
+take(dont_touch_me) :-
+	write('Sorry, you died!'), nl,
+	finish.
 
 take(X) :-
 	i_am_at(P),
@@ -259,17 +263,11 @@ lookaround :-
 	nl.
 
 win :-
-	write('You win with '), write(Level), write('points!'), nl,
+	level(X),
+	X < -14,
+	write('You win with '), write(Level), write(' points!'), nl,
     finish,
-	i_am_at(2.0),
-	holding(brisk),
-	holding(quesadilla),
-	holding(meat_sweats).
-
-die :-
-	pickup(forbidden_hoot),
-	write('Sorry, you died! with'), nl,
-	finish.
+	i_am_at(2.0).
 
 finish :-
 	nl,

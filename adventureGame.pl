@@ -146,7 +146,7 @@ newlevel(X) :-
 	write('New level is: '), write(LNew), nl.
 
 take(_) :-
-	write('I don''t see it here.'),
+	write('I don''t see that here.'),
 	nl.
 
 drop(X) :-
@@ -156,8 +156,8 @@ drop(X) :-
 	value(X,L),
 	retract(level(L)),
 	assert(at(X, P)),
-	write('OK, item dropped.'),
-	write("your level is changed by"),
+	write('OK, item dropped.'), nl,
+	write("Your level is changed by: "),
 	write(L),
 	!, nl.
 
@@ -169,7 +169,7 @@ equip(X) :-
 	holding(X),
 	addtoequip(X, dl(PREV,NEW),dl(PREV,NEW)),
 	write('You are now equipped with '), write(X), ln,
-	movedirections(X).
+	directions(X).
 
 directions(X) :-
 	move(X, 0),

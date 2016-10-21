@@ -4,6 +4,7 @@
 	  |_3_|_4_|_5_|	start = 4
 	  |END|_6_|_7_|
 	  |_8_|_9_|_10|
+	  
 	*/
 
 :- dynamic i_am_at/1, at/2, holding/1, equipped/1, level/1, random/1.

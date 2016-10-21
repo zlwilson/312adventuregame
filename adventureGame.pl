@@ -1,11 +1,17 @@
-	/* Layout of board:
-	   ___ ___ ___
-	  |_0_|_1_|_2_|
-	  |_3_|_4_|_5_|	start = 4
-	  |END|_6_|_7_|
-	  |_8_|_9_|_10|
-	  
-	*/
+%Team members:
+%Zack Wilson - 29738127 - q6m8
+%TaeWoo Kim - 42879122 - p2v9
+%Sean Copeland - 20460127 - x4v8
+%
+%Layout of board:
+%   ___ ___ ___
+%  |_0_|_1_|_2_|
+%  |_3_|_4_|_5_|	start = 4
+%  |END|_6_|_7_|
+%  |_8_|_9_|_10|
+%	  
+%link to wiki:
+%http://wiki.ubc.ca/Course:CPSC312-2016-Project1-SafetyAdventure
 
 :- dynamic i_am_at/1, at/2, holding/1, equipped/1, level/1, random/1.
 :- retractall(at(_, _)), retractall(i_am_at(_)), retractall(alive(_)).
@@ -128,18 +134,19 @@ move(straps, 0).
 move(gats, 1).
 move(herbs, 0).
 
-
 /* Rules for collecting objects */
 
+% take(X) is true if:
+%   user is at location P,
+%   object X is at location P,
+% user loses the game if dont_touch_me is picked up
 take(X) :-
 	holding(X),
 	write('You''re already holding that!'),
 	!, nl.
-
 take(dont_touch_me) :-
 	write('Sorry, you died!'), nl,
 	finish.
-
 take(X) :-
 	i_am_at(P),
 	at(X, P),
@@ -152,18 +159,12 @@ take(X) :-
 	write(L),
 	!, nl.
 
-newlevel(X) :-
-	nb_getval(level, L),
-	write('Old level is: '), write(L), nl,
-	value(X, I),
-	LNew is L + I,
-	nb_setval(level, LNew),
-	write('New level is: '), write(LNew), nl.
-
 take(_) :-
 	write('I don''t see that here.'),
 	nl.
 
+% drop(X) is true if:
+%   user is holding Object X
 drop(X) :-
 	holding(X),
 	i_am_at(P),
@@ -181,13 +182,29 @@ drop(_) :-
 	write('You aren''t holding that!'),
 	nl.
 
+equip(david) :-
+	i_am_at(end),
+	holding(david),
+	assert(equipped(david)),
+	write('You equipped David in the Poole!'), nl,
+	win.
+
+equip(david) :-
+	\+i_am_at(end),
+	write('You can''t do me like that.'), nl.
+
+% equip(X) is true if:
+%   user is holding Object X
 equip(X) :-
 	holding(X),
 	assert(equipped(X)),
 	write('You are now equipped with '), write(X), nl,
 	directions(X).
 
+% unequip(X) is true if:
+%   user has Object X equipped
 unequip(X) :-
+	equipped(X),
 	retract(equipped(X)),
 	write('You are now unequipped with '), write(X), nl,
 	!, nl.
@@ -212,14 +229,14 @@ david :-
 	at(david, X),
 	write('David is at '), write(X), nl.
 
+% generate a random number [0,10] for david to be placed
 moveDavid(X) :- 
 	at(david, Y),
 	retract(at(david, Y)),
 	X is random(10),
 	assert(at(david, X)).
 
-/* Print out objects around you */
-
+% print out objects around you
 notice_objects_at(P) :-
 	at(X, P),
 	write('There is a '), write(X), write(' here.'), nl,
@@ -227,10 +244,7 @@ notice_objects_at(P) :-
 
 notice_objects_at(_).
 
-addtoequip(E,dl(L1,L2),dl([E|L1])).
-
-/* Directions and moving */
-
+% directions for moving
 n :-
 	equipped(X),
 	move(X,0),
@@ -271,7 +285,7 @@ sw :-
 	move(X,1),
 	go(sw).
 
-
+% move in direction specified by equipped item
 go(D) :-
 	i_am_at(H),
 	path(H, D, T),
@@ -281,8 +295,10 @@ go(D) :-
 
 go(_) :- write('You can''t go that way.').
 
+% win condition:
+% true if user is holding object X and X = david and user is at end
 win :-
-	holding(david),
+	equipped(david),
 	i_am_at(end),
 	write('You got David to the Pool(e)!'), nl,
     finish.
@@ -291,7 +307,6 @@ finish :-
 	nl,
 	write('The game is over. Please enter the "halt." command.'),
 	nl.
-
 
 instructions :-
 	nl,
@@ -321,15 +336,9 @@ instructions :-
 	write('halt.              -- to end the game and quit.'), nl,
 	nl.
 
-
-/* This rule prints out instructions and tells where you are. */
-
 start :-
 	instructions,
 	look.
-
-
-/* Describe each room. */
 
 describe(0) :-
 	write('You are here:'), nl,
